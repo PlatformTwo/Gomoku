@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.16" systemVersion="17A277" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.12"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -9,16 +13,66 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Gomoku" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Pgt-5g-wiQ">
+                                <rect key="frame" x="167" y="192" width="40" height="30"/>
+                                <state key="normal" title="15x15"/>
+                                <connections>
+                                    <action selector="press15:" destination="BYZ-38-t0r" eventType="touchUpInside" id="hAo-wu-op0"/>
+                                    <segue destination="JDk-rJ-kOo" kind="show" identifier="segue15" id="hiy-46-W2D"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Gomoku" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sxd-Yx-VCD">
+                                <rect key="frame" x="155" y="92" width="65" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a5b-AO-sFO">
+                                <rect key="frame" x="167" y="285" width="40" height="30"/>
+                                <state key="normal" title="19x19"/>
+                                <connections>
+                                    <action selector="press19:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Pu1-HL-Wt5"/>
+                                    <segue destination="JDk-rJ-kOo" kind="show" identifier="segue19" id="4BG-Mr-vyq"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="a5b-AO-sFO" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="O60-1N-U9k"/>
+                            <constraint firstItem="sxd-Yx-VCD" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="72" id="W2w-9N-MSl"/>
+                            <constraint firstItem="a5b-AO-sFO" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="265" id="aAh-Wc-bVt"/>
+                            <constraint firstItem="sxd-Yx-VCD" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="cFF-ug-GjF"/>
+                            <constraint firstItem="Pgt-5g-wiQ" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="172" id="kiy-QC-xM3"/>
+                            <constraint firstItem="Pgt-5g-wiQ" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="pIV-BC-4Y5"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
         </scene>
+        <!--Game View Controller-->
+        <scene sceneID="FXC-nd-Yk3">
+            <objects>
+                <viewController id="JDk-rJ-kOo" customClass="GameViewController" customModule="Gomoku" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Vcj-5f-ZJl">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="bND-k6-NXy"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="S2h-9V-uvR" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="895" y="34"/>
+        </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="hiy-46-W2D"/>
+    </inferredMetricsTieBreakers>
 </document>
