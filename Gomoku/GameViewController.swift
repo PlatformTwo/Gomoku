@@ -82,6 +82,17 @@ class GameViewController: UIViewController {
     }
     
     
+    // Returns the X and Y coordinates for a hash value
+    func hashToXY(hash:Int) -> (x: Int, y: Int) {
+        return (hash % boardSize, hash / boardSize)
+        
+    }
+    // Returns the hash value given X and Y coordinates
+    func XYToHash(xCoord : Int, yCoord : Int) -> Int{
+        return (yCoord * boardSize + xCoord)
+    }
+    
+    
     func drawBoard(){
         // Create a brown square board that takes up the width of the screen
         let board = UIView(frame: CGRect( x: boardX!, y: boardY!, width: screenWidth!, height: screenWidth!))
@@ -142,20 +153,21 @@ class GameViewController: UIViewController {
 
     
     func placeTile(button:UIButton)->Bool{
-        print("The \(button.tag) button was pressed")
+        // print("The \(button.tag) button was pressed")
         let tileHash = button.tag
         let tileLoc = button.center
         
         if !(occupied!.contains(tileHash)){
+            let gridX = hashToXY(hash: tileHash).x
+            let gridY = hashToXY(hash: tileHash).y
             
-            let gridX : Int = tileHash / boardSize!
-            let gridY : Int = tileHash % boardSize!
+            
             if(whoseTurn == Sides.black)
             {
-                currBoard![gridX][gridY] = SpotState.black
+                currBoard[gridX][gridY] = SpotState.black
             }
             else{
-                currBoard![gridX][gridY] = SpotState.white
+                currBoard[gridX][gridY] = SpotState.white
             }
             /*
              for i in currBoard{
