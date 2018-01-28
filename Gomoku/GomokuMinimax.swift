@@ -188,6 +188,13 @@ class AI {
                                     {
                                         count = count + 1
                                     }
+                                    else if num == 5{
+                                        if ((before != GameViewController.SpotState.empty) && (after != GameViewController.SpotState.empty))
+                                        {
+                                            count = count + 1
+                                        }
+                            
+                                    }
                                 }
                             }
                             
