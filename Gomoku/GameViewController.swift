@@ -28,15 +28,12 @@ class GameViewController: UIViewController {
     var buttons: [UIButton] = []
     
 
-    enum Sides{
-        case black, white
-    }
     
-    var playerSide = Sides.black
+    var playerSide = SpotState.black
     
-    var AISide = Sides.white
+    var AISide = SpotState.white
     
-    var whoseTurn = Sides.black
+    var whoseTurn = SpotState.black
     
     var opponent: AI!
     
@@ -90,6 +87,27 @@ class GameViewController: UIViewController {
     // Returns the hash value given X and Y coordinates
     func XYToHash(xCoord : Int, yCoord : Int) -> Int{
         return (yCoord * boardSize + xCoord)
+    }
+    
+    func printBoard(toPrint: [[SpotState]]){
+        for column in toPrint{
+            var currCol = ""
+
+            for tile in column{
+                if tile == SpotState.black{
+                    currCol.append("b")
+                }
+                else if tile == SpotState.white{
+                    currCol.append("w")
+                    
+                }
+                else{
+                    currCol.append("_")
+                }
+            }
+            print(currCol)
+            
+        }
     }
     
     
@@ -148,6 +166,7 @@ class GameViewController: UIViewController {
             }
             
         }
+        printBoard(toPrint: currBoard)
     }
     
 
@@ -162,7 +181,7 @@ class GameViewController: UIViewController {
             let gridY = hashToXY(hash: tileHash).y
             
             
-            if(whoseTurn == Sides.black)
+            if(whoseTurn == SpotState.black)
             {
                 currBoard[gridX][gridY] = SpotState.black
             }
@@ -198,7 +217,7 @@ class GameViewController: UIViewController {
         shapeLayer.path = circlePath.cgPath
         
         //change the fill color
-        if (whoseTurn == Sides.black){
+        if (whoseTurn == SpotState.black){
             shapeLayer.fillColor = UIColor.black.cgColor
         }
         else{
@@ -213,7 +232,7 @@ class GameViewController: UIViewController {
         
         
         var alertMsg:String
-        if(whoseTurn == Sides.black){
+        if(whoseTurn == SpotState.black){
             alertMsg = "Black won"
         }
         else{
@@ -230,7 +249,7 @@ class GameViewController: UIViewController {
     
     
     func resetBoard(){
-        whoseTurn = Sides.black
+        whoseTurn = SpotState.black
         occupied = []
         currBoard = [[SpotState]](repeating: [SpotState](repeating: SpotState.empty, count: boardSize!), count: boardSize!)
         for layer in tiles!{
