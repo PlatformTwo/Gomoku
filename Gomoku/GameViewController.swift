@@ -110,6 +110,15 @@ class GameViewController: UIViewController {
         }
     }
     
+    func oppositeSide(mySide: SpotState) -> SpotState{
+        if mySide == SpotState.black{
+            return SpotState.white
+        }
+        else{
+            return SpotState.black
+        }
+    }
+    
     
     func drawBoard(){
         // Create a brown square board that takes up the width of the screen

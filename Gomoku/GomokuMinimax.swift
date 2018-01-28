@@ -211,24 +211,24 @@ class AI {
     
     
  
-    func optimalMove(currPlayer: GameViewController.SpotState, currBoard : [[GameViewController.SpotState]]) -> Int{
+    func optimalMove(currPlayer: GameViewController.SpotState, currBoard : [[GameViewController.SpotState]]) -> (hash: Int, score: Int){
         
         
         
         //countInARow(num: 4, color: GameViewController.SpotState.black, boar)
         let possibleMoves = genBoards(currPlayer : currPlayer, currBoard: currBoard)
-        var bestMoveScore: Int = -1
-        var bestMoveHash: Int = -1
+        var bestMoveScore: Int = Int.min
+        var bestMoveHash: Int = Int.min
         
         for(moveHash, board) in possibleMoves{
-            var currScore: Int = -1;
+            var currScore: Int = Int.min
             if currPlayer == GameViewController.SpotState.black{
                 currScore = (getScore(targetSide: GameViewController.SpotState.black, board: board) - getScore(targetSide: GameViewController.SpotState.white, board: board))
             }
             else{
                 currScore = (getScore(targetSide: GameViewController.SpotState.white, board: board) - getScore(targetSide: GameViewController.SpotState.black, board: board))
-
             }
+            print("currScore \(currScore)")
             if currScore > bestMoveScore{
                 bestMoveScore = currScore
                 bestMoveHash = moveHash
@@ -237,7 +237,7 @@ class AI {
             
         }
         
-        return bestMoveHash
+        return (bestMoveHash, bestMoveScore)
     }
     
     
@@ -268,15 +268,60 @@ class AI {
     }
     
     
-    func aiMove(){
-        print("Score \(getScore(targetSide: gameView.AISide, board: gameView.currBoard))")
-        let chosenMove = optimalMove(currPlayer: gameView.AISide, currBoard: gameView.currBoard)
+    // We can simulate the min part (the opponenet's best move) by using the
+    func maxRec(currPlayer: GameViewController.SpotState, currBoard: [[GameViewController.SpotState]], depth: Int) -> (hash: Int, score: Int){
+        if depth >= 1{
+            return optimalMove(currPlayer: currPlayer, currBoard: currBoard)
+        }
+        else{
+            
+            let possibleBoards = genBoards(currPlayer: currPlayer, currBoard: currBoard)
+            var bestScore = Int.min
+            var bestMove = 0
+            
+            for (_, board) in possibleBoards{
+                let currMove = minRec(currPlayer: gameView.oppositeSide(mySide: currPlayer), currBoard: board, depth: (depth + 1))
+                if( currMove.score > bestScore){
+                    bestScore = currMove.score
+                    bestMove = currMove.hash
+                }
+            }
+            return (bestMove, bestScore)
+        }
+    }
+    func minRec(currPlayer: GameViewController.SpotState, currBoard: [[GameViewController.SpotState]], depth: Int) -> (hash: Int, score: Int) {
+        if depth >= 1{
+            return optimalMove(currPlayer: currPlayer, currBoard: currBoard)
+        }
+        else{
+            let possibleBoards = genBoards(currPlayer: currPlayer, currBoard: currBoard)
+            var worstScore = Int.max
+            var worstMove = 0
+            for (_, board) in possibleBoards{
+                let currMove = maxRec(currPlayer: gameView.oppositeSide(mySide: currPlayer), currBoard: board, depth: (depth + 1))
+                if currMove.score < worstScore{
+                    worstScore = currMove.score
+                    worstMove = currMove.hash
+                }
+            }
+            return (worstMove, worstScore)
+        }
+    }
+
     
+    
+    
+    func aiMove(){
+        //print("Score \(getScore(targetSide: gameView.AISide, board: gameView.currBoard))")
+   
+        //let chosenMove = optimalMove(currPlayer: gameView.AISide, currBoard: gameView.currBoard)
+        let chosenMove = maxRec(currPlayer: gameView.AISide, currBoard: gameView.currBoard, depth: 0).hash
         var chosenButton = gameView.view.viewWithTag(chosenMove) as? UIButton
         
         
         gameView.placeTile(button: chosenButton!)
-       
+        //print("After move, score \(getScore(targetSide: gameView.AISide, board: gameView.currBoard))")
+
     }
     
     
