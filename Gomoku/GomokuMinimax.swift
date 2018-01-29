@@ -51,8 +51,8 @@ class AI {
             let (tileX, tileY) = gameView.hashToXY(hash: tileHash)
             
             // I only search within 4 spaces of existing tiles since there's a much smaller offensive/defensive benefit from playing a move further away, since you can't block anything.
-            for currX in (tileX - 4)...(tileX + 4){
-                for currY in (tileY - 4)...(tileY + 4){
+            for currX in (tileX - 2)...(tileX + 2){
+                for currY in (tileY - 2)...(tileY + 2){
                     if ((currX == tileX) && (currY == tileY)){
                         continue
                     }
@@ -151,8 +151,6 @@ class AI {
                                     }
                                 }
                             }
-                            
-                            
                         }
                     }
                 }
@@ -228,7 +226,7 @@ class AI {
             else{
                 currScore = (getScore(targetSide: GameViewController.SpotState.white, board: board) - getScore(targetSide: GameViewController.SpotState.black, board: board))
             }
-            print("currScore \(currScore)")
+            //print("currScore \(currScore)")
             if currScore > bestMoveScore{
                 bestMoveScore = currScore
                 bestMoveHash = moveHash
@@ -268,8 +266,8 @@ class AI {
     }
     
     
-    // We can simulate the min part (the opponenet's best move) by using the
-    func maxRec(currPlayer: GameViewController.SpotState, currBoard: [[GameViewController.SpotState]], depth: Int) -> (hash: Int, score: Int){
+    // minSoFar and maxSoFar is used to implement alpha beta pruning.
+    func maxRec(currPlayer: GameViewController.SpotState, currBoard: [[GameViewController.SpotState]], depth: Int, minSoFar: Int) -> (hash: Int, score: Int){
         if depth >= 1{
             return optimalMove(currPlayer: currPlayer, currBoard: currBoard)
         }
@@ -280,7 +278,10 @@ class AI {
             var bestMove = 0
             
             for (_, board) in possibleBoards{
-                let currMove = minRec(currPlayer: gameView.oppositeSide(mySide: currPlayer), currBoard: board, depth: (depth + 1))
+                let currMove = minRec(currPlayer: gameView.oppositeSide(mySide: currPlayer), currBoard: board, depth: (depth + 1), maxSoFar: bestScore)
+                if currMove.score > minSoFar {
+                    break
+                }
                 if( currMove.score > bestScore){
                     bestScore = currMove.score
                     bestMove = currMove.hash
@@ -289,7 +290,7 @@ class AI {
             return (bestMove, bestScore)
         }
     }
-    func minRec(currPlayer: GameViewController.SpotState, currBoard: [[GameViewController.SpotState]], depth: Int) -> (hash: Int, score: Int) {
+    func minRec(currPlayer: GameViewController.SpotState, currBoard: [[GameViewController.SpotState]], depth: Int, maxSoFar: Int) -> (hash: Int, score: Int) {
         if depth >= 1{
             return optimalMove(currPlayer: currPlayer, currBoard: currBoard)
         }
@@ -297,12 +298,17 @@ class AI {
             let possibleBoards = genBoards(currPlayer: currPlayer, currBoard: currBoard)
             var worstScore = Int.max
             var worstMove = 0
+            
             for (_, board) in possibleBoards{
-                let currMove = maxRec(currPlayer: gameView.oppositeSide(mySide: currPlayer), currBoard: board, depth: (depth + 1))
+                let currMove = maxRec(currPlayer: gameView.oppositeSide(mySide: currPlayer), currBoard: board, depth: (depth + 1), minSoFar: worstScore)
+                if currMove.score < maxSoFar{
+                    break
+                }
                 if currMove.score < worstScore{
                     worstScore = currMove.score
                     worstMove = currMove.hash
                 }
+                
             }
             return (worstMove, worstScore)
         }
@@ -315,7 +321,7 @@ class AI {
         //print("Score \(getScore(targetSide: gameView.AISide, board: gameView.currBoard))")
    
         //let chosenMove = optimalMove(currPlayer: gameView.AISide, currBoard: gameView.currBoard)
-        let chosenMove = maxRec(currPlayer: gameView.AISide, currBoard: gameView.currBoard, depth: 0).hash
+        let chosenMove = maxRec(currPlayer: gameView.AISide, currBoard: gameView.currBoard, depth: 0, minSoFar: Int.max).hash
         var chosenButton = gameView.view.viewWithTag(chosenMove) as? UIButton
         
         
